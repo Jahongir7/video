@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./index.css";
+import video1 from "/1.mp4";
+import video2 from "/2.mp4";
+import video3 from "/3.mp4";
 
 const App = () => {
   const [activeVideo, setActiveVideo] = useState(0);
   const videoRefs = [useRef(null), useRef(null), useRef(null)];
-  const timings = [10000, 10000, 10000]; // durations for each video in milliseconds
+  const timings = [13500, 13500, 13500]; // durations for each video in milliseconds
+  const videoSources = [video1, video2, video3]; // video sources
 
   useEffect(() => {
     let currentVideo = 0;
@@ -47,9 +51,15 @@ const App = () => {
     <div className="grid">
       {videoRefs.map((ref, index) => (
         <div key={index} className="video-container">
-          <video ref={ref} src="./mov_bbb.mp4" controls />
+          <video ref={ref} src={videoSources[index]} />
           <div
             className={`overlay ${activeVideo === index ? "swipe" : ""}`}
+            style={{
+              background:
+                activeVideo === index
+                  ? "linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))"
+                  : "rgba(0, 0, 0, 1)",
+            }}
           ></div>
         </div>
       ))}
