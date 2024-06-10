@@ -35,7 +35,7 @@ html, body {
 }
 
 .swipe {
-  animation: swipe 13.3s linear infinite;
+  animation: swipe 13.2s linear infinite;
 }
 
 @keyframes swipe {
