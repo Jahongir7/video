@@ -48,8 +48,8 @@ const App = () => {
   }, []);
 
   return (
-    <div className="grid">
-      {videoRefs.map((ref, index) => (
+    <div className="video-container">
+      {/* {videoRefs.map((ref, index) => (
         <div key={index} className="video-container">
           <video ref={ref} src={videoSources[index]} />
           <div
@@ -62,7 +62,8 @@ const App = () => {
             }}
           ></div>
         </div>
-      ))}
+      ))} */}
+      <video src={video1}></video>
     </div>
   );
 };
