@@ -2,7 +2,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Creates 3 equal columns */
   grid-template-rows: 1fr; /* Creates a single row */
-  gap: 10px; /* Adds space between the grid items */
   width: 100%; /* Ensures the grid takes the full width of the parent container */
 }
 
@@ -36,5 +35,8 @@
 
 @keyframes swipe {
   0% { left: 0; }
+  10%{
+    left: 80%;
+  }
   100% { left: 100%; }
 }
