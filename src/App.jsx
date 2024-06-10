@@ -1,22 +1,48 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
 
 const App = () => {
   const [activeVideo, setActiveVideo] = useState(0);
+  const videoRefs = [useRef(null), useRef(null), useRef(null)];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveVideo((prev) => (prev + 1) % 3);
-    }, 10000); // Change video every 10 seconds
+    const timings = [10000, 10000, 10000]; // durations for each video in milliseconds
 
-    return () => clearInterval(interval);
+    const playNextVideo = (index) => {
+      const prevIndex = index === 0 ? videoRefs.length - 1 : index - 1;
+      if (index > 0) {
+        videoRefs[prevIndex].current.pause();
+        videoRefs[prevIndex].current.currentTime = 0;
+      }
+
+      videoRefs[index].current.play();
+      setActiveVideo(index);
+    };
+
+    const intervals = [];
+    const totalDuration = timings.reduce((a, b) => a + b, 0);
+
+    let accumulatedTime = 0;
+    for (let i = 0; i < videoRefs.length; i++) {
+      intervals.push(setTimeout(() => playNextVideo(i), accumulatedTime));
+      accumulatedTime += timings[i];
+    }
+
+    intervals.push(
+      setTimeout(() => {
+        setActiveVideo(0);
+        playNextVideo(0);
+      }, totalDuration)
+    );
+
+    return () => intervals.forEach(clearTimeout);
   }, []);
 
   return (
     <div className="grid">
-      {[0, 1, 2].map((index) => (
+      {videoRefs.map((ref, index) => (
         <div key={index} className="video-container">
-          <video width="100%" src="./mov_bbb.mp4" controls />
+          <video ref={ref} src="./mov_bbb.mp4" controls />
           <div
             className={`overlay ${activeVideo === index ? "swipe" : ""}`}
           ></div>
