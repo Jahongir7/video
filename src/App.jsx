@@ -4,38 +4,43 @@ import "./index.css";
 const App = () => {
   const [activeVideo, setActiveVideo] = useState(0);
   const videoRefs = [useRef(null), useRef(null), useRef(null)];
+  const timings = [10000, 10000, 10000]; // durations for each video in milliseconds
 
   useEffect(() => {
-    const timings = [10000, 10000, 10000]; // durations for each video in milliseconds
+    let currentVideo = 0;
 
-    const playNextVideo = (index) => {
-      const prevIndex = index === 0 ? videoRefs.length - 1 : index - 1;
-      if (index > 0) {
-        videoRefs[prevIndex].current.pause();
-        videoRefs[prevIndex].current.currentTime = 0;
+    const playNextVideo = () => {
+      // Pause and reset the current video
+      if (videoRefs[currentVideo].current) {
+        videoRefs[currentVideo].current.pause();
+        videoRefs[currentVideo].current.currentTime = 0;
       }
 
-      videoRefs[index].current.play();
-      setActiveVideo(index);
+      // Move to the next video
+      currentVideo = (currentVideo + 1) % videoRefs.length;
+
+      // Play the next video
+      if (videoRefs[currentVideo].current) {
+        videoRefs[currentVideo].current.play();
+        setActiveVideo(currentVideo);
+      }
+
+      // Set the timeout for the next video
+      setTimeout(playNextVideo, timings[currentVideo]);
     };
 
-    const intervals = [];
-    const totalDuration = timings.reduce((a, b) => a + b, 0);
+    // Start the first video
+    playNextVideo();
 
-    let accumulatedTime = 0;
-    for (let i = 0; i < videoRefs.length; i++) {
-      intervals.push(setTimeout(() => playNextVideo(i), accumulatedTime));
-      accumulatedTime += timings[i];
-    }
-
-    intervals.push(
-      setTimeout(() => {
-        setActiveVideo(0);
-        playNextVideo(0);
-      }, totalDuration)
-    );
-
-    return () => intervals.forEach(clearTimeout);
+    // Cleanup timeouts on unmount
+    return () => {
+      videoRefs.forEach((ref) => {
+        if (ref.current) {
+          ref.current.pause();
+          ref.current.currentTime = 0;
+        }
+      });
+    };
   }, []);
 
   return (
