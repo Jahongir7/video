@@ -63,7 +63,7 @@ const App = () => {
           ></div>
         </div>
       ))} */}
-      <video src={video1}></video>
+      <video src={video1} controls></video>
     </div>
   );
 };
